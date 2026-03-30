@@ -1,0 +1,24 @@
+# A simple program that reads a text file, counts the words,
+# and prints the top‑3 most frequent words.
+
+import collections
+import re
+
+def count_words(file_path):
+    """Read a file and return a Counter of word frequencies."""
+    with open(file_path, "r", encoding="utf-8") as f:
+        text = f.read().lower()
+    # Split on any non‑letter character
+    words = re.findall(r"\b[a-z]+\b", text)
+    return collections.Counter(words)
+
+def print_top_n(counter, n=3):
+    """Print the n most common words and their counts."""
+    print(f"Top {n} words:")
+    for word, cnt in counter.most_common(n):
+        print(f"{word}: {cnt}")
+
+if __name__ == "__main__":
+    # Replace 'sample.txt' with the path to your own file
+    word_counts = count_words("sample.txt")
+    print_top_n(word_counts, n=3)
