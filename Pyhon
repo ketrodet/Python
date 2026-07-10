@@ -22,3 +22,27 @@ if __name__ == "__main__":
     # Replace 'sample.txt' with the path to your own file
     word_counts = count_words("sample.txt")
     print_top_n(word_counts, n=3)
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function withRetries(label, fn, delaysSec = RETRY_DELAYS_SEC) {
+  for (let i = 0; i < delaysSec.length; i++) {
+    const attempt = i + 1;
+    try {
+      console.log(`[RETRY] ${label}: попытка ${attempt}/${delaysSec.length}`);
+      const result = await fn();
+      return result;
+    } catch (e) {
+      const msg = e.shortMessage || e.message || String(e);
+      console.log(`[RETRY] ${label}: ошибка на попытке ${attempt}: ${msg}`);
+      if (i === delaysSec.length - 1) {
+        console.log(`[RETRY] ${label}: исчерпаны все попытки, сдаёмся.`);
+        throw e;
+      }
+      const delayMs = delaysSec[i] * 1000;
+      console.log(`[RETRY] ${label}: ждём ${delaysSec[i]} секунд перед новой попыткой...`);
+      await sleep(delayMs);
+    }
+  }
+}
